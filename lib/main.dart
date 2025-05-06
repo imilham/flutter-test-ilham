@@ -5,6 +5,7 @@ import 'screens/search_screen.dart';
 import 'screens/user_profile_screen.dart';
 import 'providers/user_provider.dart';
 import 'providers/search_provider.dart';
+import 'services/search_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,8 +18,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // Hint: Use ChangeNotifierProvider for both search and user profile
-        ChangeNotifierProvider(create: (context) => SearchProvider()),
+        // Provide SearchService
+        Provider(create: (context) => SearchService()),
+        // Provide SearchProvider with SearchService dependency
+        ChangeNotifierProvider(
+          create: (context) => SearchProvider(context.read<SearchService>()),
+        ),
         // For managing user profile state
         ChangeNotifierProvider(create: (context) => UserProvider()),
       ],
