@@ -32,12 +32,11 @@ class _SearchScreenState extends State<SearchScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(
+            TextFormField(              
               controller: _controller,
               decoration: InputDecoration(
                 hintText: 'Search...',
                 filled: true,
-                // fillColor: Colors.grey.shade100,
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                 prefixIcon: const Icon(Icons.search),
               ),
@@ -57,7 +56,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   final state = snapshot.data!;
                   return switch (state) {
                     SearchInitial() => const Center(child: Text('Start typing to search')),
-                    SearchLoading() => const Center(child: CircularProgressIndicator()),
+                    SearchLoading() => const Center(child: CircularProgressIndicator.adaptive()),
                     SearchSuccess(results: final results) => ListView.builder(
                       itemCount: results.length,
                       itemBuilder: (context, index) {
