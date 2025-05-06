@@ -2,41 +2,41 @@ import 'package:flutter/foundation.dart';
 import '../models/user.dart';
 import '../repositories/user_repository.dart';
 
-// TODO: Implement UserProvider using ChangeNotifier
-// Requirements:
-// - Create a class that extends ChangeNotifier
-// - Handle loading, success, and error states
-// - Use UserRepository for data fetching
-// - Notify listeners when state changes
-
-enum UserState {
-  initial,
-  loading,
-  success,
-  error,
-}
+enum UserStatus { initial, loading, success, error }
 
 class UserProvider extends ChangeNotifier {
-  final UserRepository _userRepository;
+  final UserRepository _repository;
   
-  // TODO: Add state variables
-  UserState _state = UserState.initial;
   User? _user;
-  String? _errorMessage;
-  
-  UserState get state => _state;
+  UserStatus _status = UserStatus.initial;
+  String? _error;
+
+  UserProvider({required UserRepository repository}) : _repository = repository;
+
   User? get user => _user;
-  String? get errorMessage => _errorMessage;
-  
-  UserProvider({UserRepository? userRepository}) 
-      : _userRepository = userRepository ?? UserRepository();
-  
-  // TODO: Implement fetchUser method
+  UserStatus get status => _status;
+  String? get error => _error;
+  bool get isLoading => _status == UserStatus.loading;
+
   Future<void> fetchUser(String userId) async {
-    // TODO: Implement state management for fetching user data
-    // - Set loading state
-    // - Call repository method
-    // - Handle success and error cases
-    // - Notify listeners
+    _status = UserStatus.loading;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _user = await _repository.getUser(userId);
+      _status = UserStatus.success;
+    } catch (e) {
+      _error = e.toString();
+      _status = UserStatus.error;
+    }
+    
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _repository.dispose();
+    super.dispose();
   }
 }
