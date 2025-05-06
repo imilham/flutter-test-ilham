@@ -6,6 +6,7 @@ import 'screens/user_profile_screen.dart';
 import 'providers/user_provider.dart';
 import 'providers/search_provider.dart';
 import 'services/search_service.dart';
+import 'repositories/user_repository.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,8 +25,17 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => SearchProvider(context.read<SearchService>()),
         ),
-        // For managing user profile state
-        ChangeNotifierProvider(create: (context) => UserProvider()),
+        // Provide UserRepository
+        Provider(
+          create: (context) => UserRepository(),
+          dispose: (context, repository) => repository.dispose(),
+        ),
+        // Provide UserProvider with UserRepository dependency
+        ChangeNotifierProvider(
+          create: (context) => UserProvider(
+            repository: context.read<UserRepository>(),
+          ),
+        ),
       ],
       child: MaterialApp(
         title: 'Flutter Coding Test',
