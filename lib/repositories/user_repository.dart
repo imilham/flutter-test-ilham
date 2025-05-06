@@ -1,21 +1,33 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../models/user.dart';
 
-// TODO: Implement UserRepository
-// Requirements:
-// - Extract data fetching logic from UserProfileScreen
-// - Implement a method to fetch user by ID
-// - Return a User object instead of Map<String, dynamic>
-// - Handle errors properly
-
 class UserRepository {
   final http.Client _client;
-  
+  static const String _baseUrl = 'https://jsonplaceholder.typicode.com';
+
   UserRepository({http.Client? client}) : _client = client ?? http.Client();
-  
-  // TODO: Implement getUser method
+
   Future<User> getUser(String userId) async {
-    // TODO: Implement API call to fetch user data
-    throw UnimplementedError('getUser has not been implemented');
+    try {
+      final response = await _client.get(
+        Uri.parse('$_baseUrl/users/$userId'),
+      );
+
+      if (response.statusCode == 200) {
+        return User.fromJson(jsonDecode(response.body));
+      } else {
+        throw HttpException('Failed to load user data. Status Code: ${response.statusCode}');
+      }
+    } on HttpException {
+      rethrow;
+    } catch (e) {
+      throw Exception('An error occurred while fetching user data: $e');
+    }
+  }
+
+  void dispose() {
+    _client.close();
   }
 }
