@@ -1,3 +1,4 @@
+// Main app file - sets up providers and routing
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/settings_screen.dart';
@@ -12,6 +13,7 @@ void main() {
   runApp(const MyApp());
 }
 
+// Root widget that configures the app's providers and theme
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -19,18 +21,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // Provide SearchService
+        /// [SearchService] handles the actual search operations
         Provider(create: (context) => SearchService()),
-        // Provide SearchProvider with SearchService dependency
+        /// [SearchProvider] manages search state and results using streams
         ChangeNotifierProvider(
           create: (context) => SearchProvider(context.read<SearchService>()),
         ),
-        // Provide UserRepository
+        /// [UserRepository] handles API calls and data fetching
         Provider(
           create: (context) => UserRepository(),
           dispose: (context, repository) => repository.dispose(),
         ),
-        // Provide UserProvider with UserRepository dependency
+        /// [UserProvider] manages user state and [loading/error states]
         ChangeNotifierProvider(
           create: (context) => UserProvider(
             repository: context.read<UserRepository>(),
@@ -55,6 +57,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/// Main screen with navigation buttons to different features
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 

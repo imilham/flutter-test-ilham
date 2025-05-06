@@ -1,7 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+
+/// Service that handles search functionality with mock data
 class SearchService {
+  /// Sample topics we can search through - simulates a backend API
   final List<String> _mockData = [
     'Flutter Development',
     'Dart Programming',
@@ -19,22 +23,29 @@ class SearchService {
 
   final Random _random = Random();
 
-  Future<List<String>> searchItems(String query) async {
-    // Simulate network delay between 200ms and 1000ms
-    await Future.delayed(Duration(milliseconds: 200 + _random.nextInt(800)));
+  /// Searches through mock data with simulated network behavior
+  /// 
+  Future<List<String>> searchProducts(String query) async {
+    try {
+      /// Add random delay to feel like a real API [500ms-1000ms)]
+      await Future.delayed(Duration(milliseconds: 500 + _random.nextInt(800)));
 
-    // Simulate random errors (10% chance)
-    if (_random.nextDouble() < 0.1) {
-      throw Exception('Failed to fetch search results');
+      /// Sometimes fail to show how error states work [10% chance]
+      if (_random.nextDouble() < 0.1) {
+        throw Exception('Failed to fetch search results');
+      }
+
+      if (query.isEmpty) {
+        return [];
+      }
+
+      /// Search through our topics, ignoring case
+      return _mockData
+          .where((item) => item.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    } catch (e) {
+      debugPrint('Error occurred: $e');
+      rethrow; // Rethrow the error to propagate it further
     }
-
-    if (query.isEmpty) {
-      return [];
-    }
-
-    // Filter mock data based on query
-    return _mockData
-        .where((item) => item.toLowerCase().contains(query.toLowerCase()))
-        .toList();
   }
 }

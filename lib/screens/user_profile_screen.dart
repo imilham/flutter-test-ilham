@@ -21,7 +21,7 @@ class UserProfileScreen extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    // Trigger initial fetch
+    /// Trigger initial fetch
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (context.read<UserProvider>().status == UserStatus.initial) {
         context.read<UserProvider>().fetchUser(userId);

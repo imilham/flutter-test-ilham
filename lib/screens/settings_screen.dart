@@ -64,7 +64,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             return true;
           },
           child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
             slivers: [
               CupertinoSliverNavigationBar(
                 largeTitle: const Text('Settings'),
@@ -72,6 +71,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 stretch: true,
                 padding: EdgeInsetsDirectional.zero,
                 backgroundColor: CupertinoColors.systemBackground.withOpacity(0.9),
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(56.0),
+                  child: AnimatedOpacity(
+                    opacity: _isSearchVisible ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: CupertinoSearchTextField(
+                        controller: _searchController,
+                        placeholder: 'Search settings...',
+                        onChanged: (value) {
+                          // Handle search
+                        },
+                      ),
+                    ),
+                  ),
+                ),
               ),
               SliverToBoxAdapter(
                 child: Padding(
@@ -145,17 +161,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      AnimatedOpacity(
-                        opacity: _isSearchVisible ? 1.0 : 0.0,
-                        duration: const Duration(milliseconds: 200),
-                        child: CupertinoSearchTextField(
-                          controller: _searchController,
-                          placeholder: 'Search settings...',
-                          onChanged: (value) {
-                            // Handle search
-                          },
-                        ),
-                      ),
+                      
                     ],
                   ),
                 ),

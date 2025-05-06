@@ -2,8 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import '../services/search_service.dart';
 
-// Search states
+// Different states our search can be in
 sealed class SearchState {}
+
+// Initial state before any search is done
 
 class SearchInitial extends SearchState {}
 
@@ -21,10 +23,11 @@ class SearchError extends SearchState {
 
 class SearchEmpty extends SearchState {}
 
+// Manages search state and handles real-time search updates
 class SearchProvider extends ChangeNotifier {
   final SearchService _searchService;
   
-  // Stream controllers
+  // Controllers for handling search input and results
   final _searchController = BehaviorSubject<String>();
   final _resultsController = BehaviorSubject<SearchState>.seeded(SearchInitial());
 
@@ -33,7 +36,7 @@ class SearchProvider extends ChangeNotifier {
   Function(String) get updateSearch => _searchController.sink.add;
 
   SearchProvider(this._searchService) {
-    // Set up search pipeline
+    // Set up reactive search pipeline with debouncing and error handling
     _searchController.stream
         .debounceTime(const Duration(milliseconds: 300))
         .distinct()
@@ -46,6 +49,7 @@ class SearchProvider extends ChangeNotifier {
         );
   }
 
+  // Performs the actual search and manages state transitions
   Stream<SearchState> _performSearch(String query) async* {
     if (query.isEmpty) {
       yield SearchEmpty();
@@ -55,7 +59,8 @@ class SearchProvider extends ChangeNotifier {
     yield SearchLoading();
 
     try {
-      final results = await _searchService.searchItems(query);
+      // Get search results from service
+      final results = await _searchService.searchProducts(query);
       if (results.isEmpty) {
         yield SearchEmpty();
       } else {
@@ -68,6 +73,7 @@ class SearchProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+    // Clean up resources when the provider is disposed
     _searchController.close();
     _resultsController.close();
     super.dispose();
