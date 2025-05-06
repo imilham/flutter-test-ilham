@@ -1,91 +1,174 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  bool _isSearchVisible = true;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _showTermsAndConditions() {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) => CupertinoActionSheet(
+        title: const Text('Terms & Conditions'),
+        message: const Text(
+          'By using this application, you agree to our terms and conditions. '
+          'This is a sample terms and conditions text that would typically '
+          'contain detailed information about user agreements, privacy policy, '
+          'and other legal information.',
+          style: TextStyle(fontSize: 14),
+        ),
+        actions: [
+          CupertinoActionSheetAction(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Accept'),
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          onPressed: () => Navigator.pop(context),
+          isDestructiveAction: true,
+          child: const Text('Close'),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Material(
       child: CupertinoPageScaffold(
-        child: CustomScrollView(
-          slivers: [
-            // TODO: Implement CupertinoSliverNavigationBar
-            // Requirements:
-            // - Use CupertinoSliverNavigationBar
-            // - Display a large title when fully expanded
-            // - Include a CupertinoSearchTextField as the bottom widget
-            // - Configure bottomMode to hide search field on scroll
-            // - Navigation bar should snap between expanded and collapsed states
-            
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Placeholder settings items
-                    _buildSettingsItem(
-                      'Notifications',
-                      CupertinoIcons.bell,
-                      onTap: () {},
-                    ),
-                    _buildSettingsItem(
-                      'Appearance',
-                      CupertinoIcons.person,
-                      onTap: () {},
-                    ),
-                    _buildSettingsItem(
-                      'Privacy',
-                      CupertinoIcons.lock,
-                      onTap: () {},
-                    ),
-                    _buildSettingsItem(
-                      'Terms & Conditions',
-                      CupertinoIcons.doc_text,
-                      onTap: () {
-                        // TODO: Implement showCupertinoSheet
-                        // Requirements:
-                        // - Use the new showCupertinoSheet function
-                        // - Show placeholder terms and conditions text
-                        // - Allow dismissal via drag-to-dismiss gesture
-                      },
-                    ),
-                    
-                    const SizedBox(height: 32),
-                    const Text(
-                      'Profile Card',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+        child: NotificationListener<UserScrollNotification>(
+          onNotification: (notification) {
+            if (notification.direction == ScrollDirection.reverse) {
+              if (_isSearchVisible) {
+                setState(() => _isSearchVisible = false);
+              }
+            } else if (notification.direction == ScrollDirection.forward) {
+              if (!_isSearchVisible) {
+                setState(() => _isSearchVisible = true);
+              }
+            }
+            return true;
+          },
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CupertinoSliverNavigationBar(
+                largeTitle: const Text('Settings'),
+                border: null,
+                stretch: true,
+                padding: EdgeInsetsDirectional.zero,
+                backgroundColor: CupertinoColors.systemBackground.withOpacity(0.9),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildSettingsItem(
+                        'Notifications',
+                        CupertinoIcons.bell,
+                        onTap: () {},
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      height: 200,
-                      decoration: BoxDecoration(
-                        color: Colors.blue.shade100,
-                        borderRadius: BorderRadius.circular(12),
+                      _buildSettingsItem(
+                        'Appearance',
+                        CupertinoIcons.person,
+                        onTap: () {},
                       ),
-                      alignment: Alignment.center,
-                      // TODO: (Bonus) Apply custom visual effect
-                      // Requirements:
-                      // - Apply a custom visual effect using ImageFilter.shader 
-                      // - Create a simple shader (gradient or noise effect)
-                      child: const Text(
+                      _buildSettingsItem(
+                        'Privacy',
+                        CupertinoIcons.lock,
+                        onTap: () {},
+                      ),
+                      _buildSettingsItem(
+                        'Terms & Conditions',
+                        CupertinoIcons.doc_text,
+                        onTap: _showTermsAndConditions,
+                      ),
+                      const SizedBox(height: 32),
+                      const Text(
                         'Profile Card',
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 16),
+                      ShaderMask(
+                        shaderCallback: (Rect bounds) {
+                          return LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.blue.shade300,
+                              Colors.blue.shade100,
+                              Colors.blue.shade200,
+                            ],
+                          ).createShader(bounds);
+                        },
+                        child: Container(
+                          height: 200,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            'Profile Card',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      AnimatedOpacity(
+                        opacity: _isSearchVisible ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 200),
+                        child: CupertinoSearchTextField(
+                          controller: _searchController,
+                          placeholder: 'Search settings...',
+                          onChanged: (value) {
+                            // Handle search
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
+
+  
+
 
   Widget _buildSettingsItem(String title, IconData icon, {required VoidCallback onTap}) {
     return GestureDetector(
