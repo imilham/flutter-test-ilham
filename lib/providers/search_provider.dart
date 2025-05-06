@@ -25,8 +25,8 @@ class SearchEmpty extends SearchState {}
 
 // Manages search state and handles real-time search updates
 class SearchProvider extends ChangeNotifier {
-  final SearchService _searchService;
-  
+  // final SearchService _searchService;
+
   // Controllers for handling search input and results
   final _searchController = BehaviorSubject<String>();
   final _resultsController = BehaviorSubject<SearchState>.seeded(SearchInitial());
@@ -35,18 +35,9 @@ class SearchProvider extends ChangeNotifier {
   Stream<SearchState> get searchResults => _resultsController.stream;
   Function(String) get updateSearch => _searchController.sink.add;
 
-  SearchProvider(this._searchService) {
+  SearchProvider() {
     // Set up reactive search pipeline with debouncing and error handling
-    _searchController.stream
-        .debounceTime(const Duration(milliseconds: 300))
-        .distinct()
-        .switchMap((query) => _performSearch(query))
-        .listen(
-          (state) => _resultsController.add(state),
-          onError: (error) => _resultsController.add(
-            SearchError(error.toString()),
-          ),
-        );
+    _searchController.stream.debounceTime(const Duration(milliseconds: 300)).distinct().switchMap((query) => _performSearch(query)).listen((state) => _resultsController.add(state), onError: (error) => _resultsController.add(SearchError(error.toString())));
   }
 
   // Performs the actual search and manages state transitions
@@ -59,8 +50,9 @@ class SearchProvider extends ChangeNotifier {
     yield SearchLoading();
 
     try {
+      final searchService = SearchService();
       // Get search results from service
-      final results = await _searchService.searchProducts(query);
+      final results = await searchService.searchProducts(query);
       if (results.isEmpty) {
         yield SearchEmpty();
       } else {

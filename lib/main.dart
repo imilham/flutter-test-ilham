@@ -6,8 +6,6 @@ import 'screens/search_screen.dart';
 import 'screens/user_profile_screen.dart';
 import 'providers/user_provider.dart';
 import 'providers/search_provider.dart';
-import 'services/search_service.dart';
-import 'repositories/user_repository.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,38 +18,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        /// [SearchService] handles the actual search operations
-        Provider(create: (context) => SearchService()),
-        /// [SearchProvider] manages search state and results using streams
-        ChangeNotifierProvider(
-          create: (context) => SearchProvider(context.read<SearchService>()),
-        ),
-        /// [UserRepository] handles API calls and data fetching
-        Provider(
-          create: (context) => UserRepository(),
-          dispose: (context, repository) => repository.dispose(),
-        ),
-        /// [UserProvider] manages user state and [loading/error states]
-        ChangeNotifierProvider(
-          create: (context) => UserProvider(
-            repository: context.read<UserRepository>(),
-          ),
-        ),
-      ],
+      providers: [ChangeNotifierProvider(create: (context) => SearchProvider()), ChangeNotifierProvider(create: (context) => UserProvider())],
       child: MaterialApp(
         title: 'Flutter Coding Test',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          useMaterial3: true,
-        ),
+        theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
         initialRoute: '/',
-        routes: {
-          '/': (context) => const HomePage(),
-          '/settings': (context) => const SettingsScreen(),
-          '/search': (context) => const SearchScreen(),
-          '/user-profile': (context) => const UserProfileScreen(userId: '1'),
-        },
+        routes: {'/': (context) => const HomePage(), '/settings': (context) => const SettingsScreen(), '/search': (context) => const SearchScreen(), '/user-profile': (context) => const UserProfileScreen(userId: '1')},
       ),
     );
   }
@@ -64,9 +36,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter Coding Test'),
-      ),
+      appBar: AppBar(title: const Text('Flutter Coding Test')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

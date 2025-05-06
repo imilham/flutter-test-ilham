@@ -6,15 +6,13 @@ import '../repositories/user_repository.dart';
 enum UserStatus { initial, loading, success, error }
 
 // Manages user data and loading states throughout the app
-class UserProvider extends ChangeNotifier {
-  final UserRepository _repository;
-  
+class UserProvider extends UserRepository with ChangeNotifier {
   // Internal state
-  User? _user;                                    // Current user data
-  UserStatus _status = UserStatus.initial;        // Loading status
-  String? _error;                                 // Error message if any
+  User? _user; // Current user data
+  UserStatus _status = UserStatus.initial; // Loading status
+  String? _error; // Error message if any
 
-  UserProvider({required UserRepository repository}) : _repository = repository;
+  UserProvider();
 
   User? get user => _user;
   UserStatus get status => _status;
@@ -26,23 +24,16 @@ class UserProvider extends ChangeNotifier {
     // Start loading and clear any previous errors
     _status = UserStatus.loading;
     _error = null;
-    notifyListeners();  // Tell widgets to show loading state
+    notifyListeners(); // Tell widgets to show loading state
 
     try {
-      _user = await _repository.getUser(userId);
+      _user = await getUser(userId);
       _status = UserStatus.success;
     } catch (e) {
       _error = e.toString();
       _status = UserStatus.error;
     }
-    
-    notifyListeners();
-  }
 
-  @override
-  void dispose() {
-    // Clean up when provider is removed
-    _repository.dispose();
-    super.dispose();
+    notifyListeners();
   }
 }

@@ -9,15 +9,7 @@ class UserProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('User Profile')),
-      body: _buildBody(context),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _refreshUser(context),
-        tooltip: 'Refresh',
-        child: const Icon(Icons.refresh),
-      ),
-    );
+    return Scaffold(appBar: AppBar(title: const Text('User Profile')), body: _buildBody(context), floatingActionButton: FloatingActionButton(onPressed: () => _refreshUser(context), tooltip: 'Refresh', child: const Icon(Icons.refresh)));
   }
 
   Widget _buildBody(BuildContext context) {
@@ -43,14 +35,7 @@ class UserProfileScreen extends StatelessWidget {
   }
 
   Widget _buildError(String? error) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Text(
-        error ?? 'An unknown error occurred',
-        style: const TextStyle(color: Colors.red),
-        textAlign: TextAlign.center,
-      ),
-    );
+    return Padding(padding: const EdgeInsets.all(16.0), child: Text(error ?? 'An unknown error occurred', style: const TextStyle(color: Colors.red), textAlign: TextAlign.center));
   }
 
   Widget _buildUserProfile(BuildContext context, User user) {
@@ -59,18 +44,7 @@ class UserProfileScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Name: ${user.name}',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 8),
-          Text('Email: ${user.email}'),
-          const SizedBox(height: 8),
-          Text('Phone: ${user.phone}'),
-          const SizedBox(height: 8),
-          Text('Website: ${user.website}'),
-        ],
+        children: [Text('Name: ${user.name}', style: Theme.of(context).textTheme.headlineSmall), const SizedBox(height: 8), Text('Email: ${user.email}'), const SizedBox(height: 8), Text('Phone: ${user.phone}'), const SizedBox(height: 8), Text('Website: ${user.website}')],
       ),
     );
   }

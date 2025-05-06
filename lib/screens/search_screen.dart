@@ -27,9 +27,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Search'),
-      ),
+      appBar: AppBar(title: const Text('Search')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -40,10 +38,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 hintText: 'Search...',
                 filled: true,
                 // fillColor: Colors.grey.shade100,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                 prefixIcon: const Icon(Icons.search),
               ),
               onChanged: (value) {
@@ -61,57 +56,41 @@ class _SearchScreenState extends State<SearchScreen> {
 
                   final state = snapshot.data!;
                   return switch (state) {
-                    SearchInitial() => const Center(
-                        child: Text('Start typing to search'),
-                      ),
-                    SearchLoading() => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                    SearchInitial() => const Center(child: Text('Start typing to search')),
+                    SearchLoading() => const Center(child: CircularProgressIndicator()),
                     SearchSuccess(results: final results) => ListView.builder(
-                        itemCount: results.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(results[index]),
-                            leading: const Icon(Icons.article),
-                            onTap: () {
-                              // Handle item tap
-                            },
-                          );
-                        },
-                      ),
+                      itemCount: results.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(results[index]),
+                          leading: const Icon(Icons.article),
+                          onTap: () {
+                            // Handle item tap
+                          },
+                        );
+                      },
+                    ),
                     SearchError(message: final message) => Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.error_outline,
-                              color: Colors.red,
-                              size: 48,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              'Error: $message',
-                              style: const TextStyle(color: Colors.red),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: () {
-                                // Retry search
-                                if (_controller.text.isNotEmpty) {
-                                  context
-                                      .read<SearchProvider>()
-                                      .updateSearch(_controller.text);
-                                }
-                              },
-                              child: const Text('Retry'),
-                            ),
-                          ],
-                        ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                          const SizedBox(height: 16),
+                          Text('Error: $message', style: const TextStyle(color: Colors.red), textAlign: TextAlign.center),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              // Retry search
+                              if (_controller.text.isNotEmpty) {
+                                context.read<SearchProvider>().updateSearch(_controller.text);
+                              }
+                            },
+                            child: const Text('Retry'),
+                          ),
+                        ],
                       ),
-                    SearchEmpty() => const Center(
-                        child: Text('No results found'),
-                      ),
+                    ),
+                    SearchEmpty() => const Center(child: Text('No results found')),
                   };
                 },
               ),
