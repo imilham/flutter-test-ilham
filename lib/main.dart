@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiProvider(//
       providers: [ChangeNotifierProvider(create: (context) => SearchProvider()), ChangeNotifierProvider(create: (context) => UserProvider())],
       child: MaterialApp(
         title: 'Flutter Coding Test',
