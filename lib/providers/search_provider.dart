@@ -47,7 +47,7 @@ class SearchProvider extends ChangeNotifier {
       return;
     }
 
-    yield SearchLoading();
+    yield SearchLoading();//
 
     try {
       final searchService = SearchService();
