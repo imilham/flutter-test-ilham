@@ -40,7 +40,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                 prefixIcon: const Icon(Icons.search),
               ),
-              onChanged: (value) {
+              onChanged: (value) {//
                 context.read<SearchProvider>().updateSearch(value);
               },
             ),
