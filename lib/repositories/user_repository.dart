@@ -14,7 +14,7 @@ class UserRepository {
   // Fetches user data from the API for a given user ID
   Future<User> getUser(String userId) async {
     try {
-      final response = await _client.get(Uri.parse('$_baseUrl/users/$userId'));//
+      final response = await _client.get(Uri.parse('$_baseUrl/users/$userId'));
 
       if (response.statusCode == 200) {
         // Parse JSON response into a User object
