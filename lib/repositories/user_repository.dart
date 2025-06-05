@@ -8,7 +8,7 @@ class UserRepository {
   final http.Client _client;
   // Using JSONPlaceholder API for demo data
   static const String _baseUrl = 'https://jsonplaceholder.typicode.com';
-
+//
   UserRepository({http.Client? client}) : _client = client ?? http.Client();
 
   // Fetches user data from the API for a given user ID
@@ -21,7 +21,7 @@ class UserRepository {
         return User.fromJson(jsonDecode(response.body));
       } else {
         /// Handle HTTP errors [like 404, 500, etc.]
-        throw HttpException('Failed to load user data. Status Code: ${response.statusCode}');
+        throw HttpException('Failed to load user data. Status Code: ${response.statusCode}');//
       }
     } on HttpException {
       /// Re-throw HTTP errors as they're already formatted
